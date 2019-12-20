@@ -1,11 +1,11 @@
-﻿#Import MSOline Module
+#Import MSOline Module
  import-module MSOnline
  #Import Exchange Online Module
  Import-Module $((Get-ChildItem -Path $($env:LOCALAPPDATA + "\Apps\2.0\") -Filter Microsoft.Exchange.Management.ExoPowershellModule.dll -Recurse).FullName | ?{ $_ -notmatch "_none_" } | select -First 1)
 
 
 #Set admin UPN
-$UPN = 'user@domain.com'
+$UPN = Read-Host -Prompt 'Input your user name'
 
 #This connects to Azure Active Directory & Exchange Online
 Connect-MsolService
@@ -25,5 +25,4 @@ $inactiveInLastThreeMonthsUsers = @()
 $inactiveInLastThreeMonthsUsers = $allUsers.UserPrincipalName | where {$loggedOnUsers.UserIds -NotContains $_}
 
 Write-Output "The following users have no logged in for the last 90 days:"
-Write-Output $inactiveInLastThreeMonthsUsers
-
+Write-Output $inactiveInLastThreeMonthsUsers | tee-object -FilePath C:\temp\inactive.users.90days.txt
